@@ -1,0 +1,42 @@
+<div class="container-fluid mt-3">
+  <div class="row">
+    <!-- Sidebar: Company List -->
+    <div class="col-md-4 sidebar">
+      <input type="text"
+             class="form-control mb-3"
+             placeholder="Search company..."
+             (input)="search($event.target.value)">
+
+      <div id="companyList">
+        <div *ngFor="let entry of filteredEntries"
+             class="toc-item"
+             [class.active-toc]="entry.pdf_filename === selectedDoc"
+             (click)="select(entry)">
+          {{ entry.company }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Viewer: TOC Display -->
+    <div class="col-md-8">
+      <h5 class="mb-3">
+        {{ selectedCompany ? 'TOC for ' + selectedCompany : 'Select a company to view TOC' }}
+      </h5>
+
+      <div class="card border-0 shadow-sm" *ngIf="selectedTOC.length > 0">
+        <div class="card-body">
+          <ul class="list-group">
+            <li *ngFor="let section of selectedTOC" class="list-group-item">
+              <strong>{{ section.title }}</strong> (Page {{ section.page }})
+              <ul *ngIf="section.subsections?.length > 0" class="ms-3 mt-1">
+                <li *ngFor="let sub of section.subsections">
+                  {{ sub.title }} (Page {{ sub.page }})
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

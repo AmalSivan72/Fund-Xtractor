@@ -1,0 +1,150 @@
+<div class="checklist-container">
+  <!-- Header -->
+  <div class="checklist-header">
+    <div class="header-left">
+      <h1>Checklist Validation</h1>
+      <p class="company-name">{{ baseName }}</p>
+    </div>
+    <div class="header-right">
+      <button class="btn btn-outline-secondary" (click)="goBack()">← Back</button>
+      <button class="btn btn-primary" (click)="downloadCSV()">⬇️ Download CSV</button>
+    </div>
+  </div>
+ 
+  <!-- Split View -->
+  <div class="split-view">
+    <!-- Left Panel -->
+    <div class="checklist-panel">
+      <!--<input type="text" class="form-control mb-3" [(ngModel)]="searchTerm" placeholder="Search Q/A…">-->
+ 
+      <div class="checklist-items">
+        <div *ngFor="let item of filteredRows"
+             class="checklist-item"
+             [class.selected]="activeItemId === item.id"
+             (click)="selectItem(item.id)">
+ 
+          <div class="item-header">
+            <div class="item-number">#{{ item.id }}</div>
+              <div class="item-status">
+                <mat-icon [class]="'status-icon ' + getStatusColor(item.status)">
+                  {{ getStatusIcon(item.status) }}
+                </mat-icon>
+              </div>
+            <div class="item-regulation">{{ item['Regulation'] }}</div>
+          </div>
+ 
+          <div class="item-content">
+            <div class="item-field">
+              <strong>Particulars:</strong>
+              <p>{{ item['Particulars'] }}</p>
+            </div>
+ 
+            <div class="item-field">
+              <strong>Answer:</strong>
+              <div [innerHTML]="item.AnswerHtml" class="markdown-answer"></div>
+            </div>
+ 
+            <div class="item-row">
+              <div class="item-field flex-1">
+                <strong>Heading:</strong>
+                <p>{{ item['Heading'] }}</p>
+              </div>
+              <div class="item-field flex-1">
+                <strong>Sub-Heading:</strong>
+                <p>{{ item['Sub- Heading'] }}</p>
+              </div>
+            </div>
+ 
+            <div class="item-field">
+              <strong>AI Search Criteria:</strong>
+              <p class="ai-search">{{ item['Where we get Information in Prospectus'] }}</p>
+            </div>
+ 
+            <!--<div class="item-field" *ngIf="item['Remarks']">
+              <strong>Remarks:</strong>
+              <p class="remarks">{{ item['Remarks'] }}</p>
+            </div>
+ 
+            <div class="item-validation">
+              <mat-form-field appearance="outline" class="status-select">
+                <mat-label>Status</mat-label>
+                <mat-select [(value)]="item.status">
+                  <mat-option value="compliant">
+                    <mat-icon class="status-icon success">check_circle</mat-icon> Compliant
+                  </mat-option>
+                  <mat-option value="partial">
+                    <mat-icon class="status-icon warning">warning</mat-icon> Partially Compliant
+                  </mat-option>
+                  <mat-option value="non-compliant">
+                    <mat-icon class="status-icon error">cancel</mat-icon> Non-Compliant
+                  </mat-option>
+                  <mat-option value="not-applicable">
+                    <mat-icon class="status-icon disabled">do_not_disturb</mat-icon> Not Applicable
+                  </mat-option>
+                  <mat-option value="pending">
+                    <mat-icon class="status-icon pending">pending</mat-icon> Pending Review
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+ 
+              <mat-form-field appearance="outline" class="page-ref">
+                <mat-label>Page Reference</mat-label>
+                <input matInput [(ngModel)]="item.pageReference" placeholder="e.g., 15, 45-67">
+              </mat-form-field>
+            </div>
+ 
+            <mat-form-field appearance="outline" class="evidence-field">
+              <mat-label>Evidence / Finding</mat-label>
+              <textarea matInput [(ngModel)]="item.evidence" rows="2"></textarea>
+            </mat-form-field>
+ 
+            <mat-form-field appearance="outline" class="notes-field">
+              <mat-label>Reviewer Notes</mat-label>
+              <textarea matInput [(ngModel)]="item.reviewerNotes" rows="2"></textarea>
+            </mat-form-field>-->
+ 
+ 
+ 
+ 
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- Right Panel: Comments for Selected Item -->
+    <div class="viewer-panel">
+      <div class="pdf-viewer-section">
+        <div class="pdf-toolbar">
+          <span class="pdf-title">Comments</span>
+          <div class="pdf-controls">
+            <span class="page-indicator">Item #{{ activeItemId }}</span>
+            <!--<button mat-icon-button><mat-icon>refresh</mat-icon></button>-->
+          </div>
+        </div>
+   
+        <!-- Scrollable comment list -->
+        <div class="pdf-viewer-placeholder">
+          <mat-icon class="large-icon">comment</mat-icon>
+          <p>Reviewer Comments</p>
+   
+          <div *ngIf="comments.length > 0; else noComments">
+            <div *ngFor="let comment of comments" class="comment-entry">
+              <p class="comment-text">🗨️ {{ comment.comment }}</p>
+              <p class="comment-meta">— {{ comment.reviewer }} · {{ comment.timestamp | date:'short' }}</p>
+            </div>
+          </div>
+   
+          <ng-template #noComments>
+            <p class="hint">No comments yet for this item.</p>
+          </ng-template>
+        </div>
+   
+        <!-- ✅ Chat input anchored at bottom -->
+        <div class="chat-input-container">
+          <div class="chat-textarea">
+            <textarea [(ngModel)]="newComment" placeholder="Type your message…"></textarea>
+          </div>
+          <button class="post-button" (click)="submitCommentFromRightPanel()">Post</button>
+        </div>
+      </div>
+    </div>

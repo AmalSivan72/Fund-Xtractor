@@ -1,0 +1,256 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-semibold">Search Fund Prospectus</h5>
+    <button class="btn btn-outline-primary btn-sm" (click)="openUploadModal()">Upload Prospectus </button>
+  </div>
+
+  <div class="input-group mb-3">
+    <input type="text"
+           class="form-control form-control-sm"
+           placeholder="Search by company"
+           [(ngModel)]="searchTerm">
+  </div>
+
+  <table class="table table-sm table-bordered table-hover align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Company</th>
+        <th>Upload Date</th>
+        <th>Uploader Name</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let entry of filteredEntries">
+        <td>{{ entry.company }}</td>
+        <td>{{ entry.upload_date | date:'dd/MM/yyyy' }}</td>
+        <td>{{ entry.uploader_name }}</td>
+        <td>
+          <span class="status-badge" [ngClass]="statusBadgeClass(entry.status)">
+            {{ entry.status }}
+          </span>
+        </td>
+        <td>
+          <div class="d-flex flex-wrap gap-1">
+            <button *ngIf="(entry.status === 'New' || entry.status === 'Processing') && !entry.toc_verified"
+                    class="btn btn-outline-secondary btn-xs"
+                    (click)="showTOC(entry)">TOC</button>
+
+            <button *ngIf="entry.toc_verified && entry.status !== 'Completed'"
+                    class="btn btn-outline-primary btn-sm"
+                    (click)="processEntry(entry)"
+                    [disabled]="entry.processing || entry.status === 'Processing'">
+              <span *ngIf="entry.processing" class="spinner-border spinner-border-sm me-1" role="status"></span>
+              {{ entry.processing ? 'Processing...' : 'Process' }}
+            </button>
+
+            <button *ngIf="entry.status === 'Completed'"
+                    class="btn btn-outline-primary btn-sm"
+                    (click)="showTOC(entry)">TOC</button>
+
+            <button *ngIf="entry.status === 'Completed'"
+                    class="btn btn-outline-primary btn-sm"
+                    (click)="viewQA(entry.pdf_filename)">Checklist Validation</button>
+
+            <button class="btn btn-outline-danger btn-xs" (click)="deleteDoc(entry.pdf_filename)">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+
+          <div *ngIf="entry.toc_verified && (entry.status === 'Processing' || entry.status === 'New')" class="mt-1">
+            <span class="badge bg-success">TOC Verified</span>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="processingStages.length > 0" class="processing-panel">
+    <div class="panel-header">⏳ Processing</div>
+    <ul class="panel-list">
+      <li *ngFor="let stage of processingStages">
+        <span class="company-name">{{ stage.company }}</span>
+        <span class="stage-text">{{ stage.stage }}</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- TOC Modal -->
+<div class="modal fade" id="tocModal" tabindex="-1" aria-labelledby="tocModalLabel" aria-hidden="true" *ngIf="activeTOC.length > 0">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="tocModalLabel"> TOC for {{ activeDoc || 'TOC Viewer' }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <!--<ul class="list-group">
+          <li *ngFor="let section of activeTOC" class="list-group-item">
+            <strong>{{ section.title }}</strong> (Page {{ section.page }})
+            <ul *ngIf="section.subsections.length > 0" class="ms-3 mt-1">
+              <li *ngFor="let sub of section.subsections">
+                {{ sub.title }} (Page {{ sub.page }})
+              </li>
+            </ul>
+          </li>
+        </ul>-->
+
+        <hr class="my-3">
+
+        <h6 class="mb-2">Edit TOC</h6>
+
+        <!-- Upload TOC File Section -->
+        <div class="mb-3 p-3 border rounded bg-light">
+          <h6 class="mb-2">Upload TOC File (CSV or JSON)</h6>
+          <div class="d-flex gap-2 align-items-end">
+            <div class="flex-grow-1">
+              <input type="file"
+                     class="form-control form-control-sm"
+                     accept=".csv,.json"
+                     (change)="onTocFileChange($event)">
+              <small class="text-muted">Select a CSV or JSON file to replace the TOC</small>
+            </div>
+            <button class="btn btn-primary btn-sm"
+                    (click)="uploadTocFile()"
+                    [disabled]="!tocFile || uploadingTocFile || !tocReady">
+              <span *ngIf="uploadingTocFile" class="spinner-border spinner-border-sm me-1"></span>
+              {{ uploadingTocFile ? 'Uploading...' : 'Upload TOC File' }}
+            </button>
+          </div>
+          <div *ngIf="lastSavedCsvPath || lastSavedJsonPath" class="mt-2">
+            <small class="text-success">
+              <span *ngIf="lastSavedCsvPath">CSV: {{ lastSavedCsvPath }}</span>
+              <span *ngIf="lastSavedJsonPath">JSON: {{ lastSavedJsonPath }}</span>
+            </small>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>TOC Tag ID</th>
+                <th>Section No. (Roman)</th>
+                <th>Section</th>
+                <th>Sub-section</th>
+                <th>Start Page#</th>
+                <th>End Page#</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let r of editedRows; let i = index">
+                <td>{{ r['TOC Tag ID'] }}</td>
+                <td><input class="form-control form-control-sm" [(ngModel)]="r['Section No. (Roman)']"></td>
+                <td><input class="form-control form-control-sm" [(ngModel)]="r['Section']"></td>
+                <td><input class="form-control form-control-sm" [(ngModel)]="r['Sub-section']"></td>
+                <td><input class="form-control form-control-sm" type="number" [(ngModel)]="r['Start Page#']"></td>
+                <td><input class="form-control form-control-sm" type="number" [(ngModel)]="r['End Page#']"></td>
+                <td>
+                  <button class="btn btn-outline-danger btn-xs" (click)="editedRows.splice(i,1)">Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-secondary btn-sm" (click)="editedRows.push({
+            'TOC Tag ID': (editedRows.length+1)+'.1',
+            'Section No. (Roman)': '',
+            'Section': '',
+            'Sub-section': '',
+            'Start Page#': null,
+            'End Page#': null
+          })">Add Row</button>
+
+          <button class="btn btn-primary btn-sm" (click)="saveEditedTOC()" [disabled]="savingEdited || !tocReady">
+            <span *ngIf="savingEdited" class="spinner-border spinner-border-sm me-1"></span>
+            Save Edited TOC
+          </button>
+
+          <button class="btn btn-outline-secondary btn-sm"
+                  (click)="rebuildFromCsv(getEntryByFilename(activeDoc))"
+                  [disabled]="!tocReady">
+            Rebuild From CSV
+          </button>
+        </div>
+
+        <div *ngIf="lastSavedCsvPath || lastSavedJsonPath" class="mt-3">
+          <div *ngIf="lastSavedCsvPath">Saved CSV: <code>{{ lastSavedCsvPath }}</code></div>
+          <div *ngIf="lastSavedJsonPath">Saved JSON: <code>{{ lastSavedJsonPath }}</code></div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-success"
+                (click)="acceptTOC(getEntryByFilename(activeDoc))"
+                [disabled]="!tocReady"
+                data-bs-dismiss="modal">✅ Accept TOC</button>
+
+        <button class="btn btn-danger"
+                (click)="rejectTOC(getEntryByFilename(activeDoc))"
+                [disabled]="!tocReady"
+                data-bs-dismiss="modal">❌ Reject TOC</button>
+
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Upload Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="uploadToast" class="toast align-items-center text-bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div id="uploadToastBody" class="toast-body">
+        ✅ Upload complete. Click "View TOC" to verify, then "Process" to begin.
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Completion Modal -->
+<div class="modal fade" id="completionModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-body">
+        <p id="completionMessage" class="fw-semibold text-success mb-0"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Upload Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form #uploadForm="ngForm" (ngSubmit)="onSubmit(uploadForm)">
+        <div class="modal-header">
+          <h5 class="modal-title" id="uploadModalLabel">Upload New Fund Prospectus</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" name="company" ngModel class="form-control mb-2" placeholder="Company Name" required>
+          <input type="date" name="upload_date" ngModel class="form-control mb-2" [max]="maxDate" required>
+          <input type="text" name="uploader_name" ngModel class="form-control mb-2" placeholder="Uploader Name" required>
+          <input type="file" name="pdf" class="form-control mb-2" accept="application/pdf" required (change)="onFileChange($event)">
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-submit-dhrp" [disabled]="loadingUpload">
+            <span *ngIf="loadingUpload" class="spinner-border spinner-border-sm me-2" role="status"></span>
+            {{ loadingUpload ? 'Uploading...' : 'Submit' }}
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" [disabled]="loadingUpload">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

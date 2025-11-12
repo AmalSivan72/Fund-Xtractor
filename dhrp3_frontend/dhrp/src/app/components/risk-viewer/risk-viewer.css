@@ -1,0 +1,125 @@
+/* Container layout */
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 1rem;
+}
+ 
+/* Header styling */
+h4 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+ 
+h5 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  color: #34495e;
+}
+ 
+/* Back button */
+.btn-outline-secondary {
+  font-size: 13px;
+  padding: 6px 12px;
+}
+ 
+/* Search input */
+input.form-control {
+  font-size: 14px;
+  padding: 6px 10px;
+}
+ 
+/* Card styling */
+.card {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+}
+ 
+.card-header {
+  background-color: #f8f9fa;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  padding: 0.6rem 1rem;
+}
+ 
+/* List group items */
+.list-group-item {
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 0.75rem 1rem;
+  border: none;
+  background-color: #fff;
+}
+ 
+.list-group-item strong {
+  color: #2c3e50;
+}
+ 
+/* Nested bullet list */
+.list-group-item ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-top: 6px;
+}
+ 
+.list-group-item ul li {
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: #555;
+}
+ 
+/* Loading spinner */
+.spinner-border {
+  width: 2rem;
+  height: 2rem;
+}
+ 
+.text-center p {
+  font-size: 14px;
+  color: #666;
+}
+ 
+/* Full risk text area */
+textarea {
+  font-family: monospace;
+  font-size: 13px;
+  background-color: #fdfdfd;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin-top: 1rem;
+  resize: vertical;
+}
+ 
+/* Error message */
+.text-danger {
+  font-size: 14px;
+  font-weight: 500;
+}
+ 
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .container {
+    padding: 0.5rem;
+  }
+ 
+  h4 {
+    font-size: 18px;
+  }
+ 
+  h5 {
+    font-size: 15px;
+  }
+ 
+  .card-header,
+  .list-group-item {
+    font-size: 13px;
+  }
+ 
+  textarea {
+    font-size: 12px;
+  }
+}

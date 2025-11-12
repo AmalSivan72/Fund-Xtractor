@@ -1,0 +1,50 @@
+<div class="container mt-4">
+  <button class="btn btn-outline-secondary mb-3" (click)="goBack()">← Back to Dashboard</button>
+
+  <h4 class="mb-3">Risk Summary for {{ docName }}</h4>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Fetching risk summary…</p>
+  </div>
+
+  <!-- Summary Section -->
+  <div *ngIf="!loading">
+    <input type="text" class="form-control mb-3" [(ngModel)]="searchTerm" placeholder="Search category…">
+
+    <div *ngIf="summaryBullets && Object.keys(summaryBullets).length > 0; else noSummary">
+      <div *ngFor="let group of Object.keys(summaryBullets)">
+        <h5 class="mt-4">{{ group }} Risks</h5>
+        <div *ngFor="let category of Object.keys(summaryBullets[group])">
+          <div *ngIf="matchesSearch(category)" class="card mb-3">
+            <div class="card-header fw-bold">{{ category }}</div>
+            <ul class="list-group list-group-flush">
+              <li *ngFor="let item of summaryBullets[group][category]" class="list-group-item">
+                <strong>{{ item.Risk }}</strong>
+                <ul class="mt-1 ms-3">
+                  <ng-container *ngFor="let key of Object.keys(item)">
+                    <li *ngIf="key !== 'Risk'">
+                      <strong>{{ key }}:</strong> {{ item[key] }}
+                    </li>
+                  </ng-container>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noSummary>
+      <p class="text-danger">No summary generated. Please check the Groq API response or try again.</p>
+    </ng-template>
+
+    <h5 class="mt-4">Full Risk Factors Section</h5>
+    <div class="border rounded p-3 bg-light" style="white-space: pre-wrap; font-family: monospace;">
+      {{ riskText }}
+    </div>
+  </div>
+</div>

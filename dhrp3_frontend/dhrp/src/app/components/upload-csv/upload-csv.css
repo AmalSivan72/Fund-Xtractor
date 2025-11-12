@@ -1,0 +1,39 @@
+.upload-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fdfdfd;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  
+  input.form-control {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+  
+  button.btn {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+  
+  .status-message {
+    font-size: 13px;
+    color: #333;
+  }
+  
+  .status-message.error {
+    color: #c0392b;
+  }
+  .back-button {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+  

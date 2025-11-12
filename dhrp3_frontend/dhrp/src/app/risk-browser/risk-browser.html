@@ -1,0 +1,78 @@
+<div class="container-fluid mt-3">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-4 sidebar">
+      <input type="text" class="form-control mb-3" placeholder="Search company..." (input)="search($event.target.value)">
+      <div id="companyList">
+        <div *ngFor="let entry of filteredEntries"
+             class="risk-item"
+             [class.active-risk]="entry.pdf_filename === selectedDoc"
+             (click)="select(entry)">
+          {{ entry.company }}
+        </div>
+      </div>
+    </div>
+ 
+    <!-- Viewer -->
+    <div class="col-md-8">
+      <h5 class="mb-3">
+        {{ selectedCompany ? 'Risk Summary for ' + selectedCompany : 'Select a company to view risk summary' }}
+      </h5>
+ 
+      <!-- Loading Spinner -->
+      <div *ngIf="loading" class="text-center my-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Fetching risk summary…</p>
+      </div>
+ 
+      <!-- Summary Section -->
+      <div *ngIf="!loading && selectedDoc">
+        <!-- Structured summary if available -->
+        <ng-container *ngIf="summaryBullets && Object.keys(summaryBullets).length > 0; else fallbackSummary">
+          <div *ngFor="let group of Object.keys(summaryBullets)">
+            <h6 class="mt-4">{{ group }} Risks</h6>
+            <div *ngFor="let category of Object.keys(summaryBullets[group])">
+              <div class="card mb-3">
+                <div class="card-header fw-bold">{{ category }}</div>
+                <ul class="list-group list-group-flush">
+                  <li *ngFor="let item of summaryBullets[group][category]" class="list-group-item">
+                    <strong>{{ item.Risk }}</strong>
+                    <ul class="mt-1 ms-3">
+                      <ng-container *ngFor="let key of Object.keys(item)">
+                        <li *ngIf="key !== 'Risk'">
+                          <strong>{{ key }}:</strong> {{ item[key] }}
+                        </li>
+                      </ng-container>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+ 
+          <!-- Always show full riskText if structured summary exists -->
+          <h6 class="mt-4">📄 Full Risk Factors Section</h6>
+          <div class="card mb-3">
+            <div class="card-body">
+              <div [innerHTML]="riskHtml" class="markdown-body"></div>
+            </div>
+          </div>
+        </ng-container>
+ 
+        <!-- Fallback: show only riskText if summaryBullets is empty -->
+        <ng-template #fallbackSummary>
+          <div *ngIf="hasRiskText">
+            <h6 class="mt-4">Full Risk Factors Section</h6>
+            <div class="card mb-3">
+              <div class="card-body">
+                <div [innerHTML]="riskHtml" class="markdown-body"></div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

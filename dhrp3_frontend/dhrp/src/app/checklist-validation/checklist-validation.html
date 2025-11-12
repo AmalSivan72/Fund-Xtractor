@@ -1,0 +1,143 @@
+<div class="checklist-container">
+    <!-- Header -->
+    <div class="checklist-header">
+      <div class="header-left">
+        <h1>Checklist Validation</h1>
+        <p class="company-name">{{ filename }}</p>
+      </div>
+      <div class="header-right">
+        <button class="btn btn-outline-secondary" (click)="goBack()">← Back</button>
+        <button class="btn btn-primary" (click)="downloadCSV()">⬇️ Download CSV</button>
+      </div>
+    </div>
+  
+    <!-- Split View -->
+    <div class="split-view">
+      <!-- Left Panel -->
+      <div class="checklist-panel">
+        <!-- DHRP Selector -->
+        <mat-form-field appearance="outline" class="dhrp-dropdown" *ngIf="dhrpEntries.length > 0">
+          <mat-label>Select DHRP Document</mat-label>
+          <mat-select (selectionChange)="onDhrpSelect($event.value)">
+            <mat-option *ngFor="let entry of dhrpEntries" [value]="entry.filename">
+              {{ entry.displayName || entry.filename }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+  
+        <!-- Search Input -->
+        <input type="text" class="form-control mb-3" [(ngModel)]="searchTerm" placeholder="Search Q/A…">
+  
+        <!-- Checklist Items -->
+        <div class="checklist-items">
+          <div *ngFor="let item of filteredRows"
+               class="checklist-item"
+               [class.selected]="activeItemId === item.id"
+               (click)="selectItem(item.id)">
+  
+            <div class="item-header">
+              <div class="item-number">#{{ item.id }}</div>
+              <div class="item-status">
+                <mat-icon [class]="'status-icon ' + getStatusColor(item.status)">
+                  {{ getStatusIcon(item.status) }}
+                </mat-icon>
+              </div>
+              <div class="item-regulation">{{ item['Regulation'] }}</div>
+            </div>
+  
+            <div class="item-content">
+              <div class="item-field">
+                <strong>Particulars:</strong>
+                <p>{{ item['Particulars'] }}</p>
+              </div>
+  
+              <div class="item-field">
+                <strong>Answer:</strong>
+                <div [innerHTML]="item.AnswerHtml" class="markdown-answer"></div>
+              </div>
+  
+              <div class="item-row">
+                <div class="item-field flex-1">
+                  <strong>Heading:</strong>
+                  <p>{{ item['Heading'] }}</p>
+                </div>
+                <div class="item-field flex-1">
+                  <strong>Sub-Heading:</strong>
+                  <p>{{ item['Sub- Heading'] }}</p>
+                </div>
+              </div>
+  
+              <div class="item-field">
+                <strong>AI Search Criteria:</strong>
+                <p class="ai-search">{{ item['What AI search for in DRHP'] }}</p>
+              </div>
+  
+              <div class="item-field" *ngIf="item['Remarks']">
+                <strong>Remarks:</strong>
+                <p class="remarks">{{ item['Remarks'] }}</p>
+              </div>
+  
+              <div class="item-validation">
+                <mat-form-field appearance="outline" class="status-select">
+                  <mat-label>Status</mat-label>
+                  <mat-select [(value)]="item.status">
+                    <mat-option value="compliant">
+                      <mat-icon class="status-icon success">check_circle</mat-icon> Compliant
+                    </mat-option>
+                    <mat-option value="partial">
+                      <mat-icon class="status-icon warning">warning</mat-icon> Partially Compliant
+                    </mat-option>
+                    <mat-option value="non-compliant">
+                      <mat-icon class="status-icon error">cancel</mat-icon> Non-Compliant
+                    </mat-option>
+                    <mat-option value="not-applicable">
+                      <mat-icon class="status-icon disabled">do_not_disturb</mat-icon> Not Applicable
+                    </mat-option>
+                    <mat-option value="pending">
+                      <mat-icon class="status-icon pending">pending</mat-icon> Pending Review
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+  
+                <mat-form-field appearance="outline" class="page-ref">
+                  <mat-label>Page Reference</mat-label>
+                  <input matInput [(ngModel)]="item.pageReference" placeholder="e.g., 15, 45-67">
+                </mat-form-field>
+              </div>
+  
+              <mat-form-field appearance="outline" class="evidence-field">
+                <mat-label>Evidence / Finding</mat-label>
+                <textarea matInput [(ngModel)]="item.evidence" rows="2"></textarea>
+              </mat-form-field>
+  
+              <mat-form-field appearance="outline" class="notes-field">
+                <mat-label>Reviewer Notes</mat-label>
+                <textarea matInput [(ngModel)]="item.reviewerNotes" rows="2"></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Right Panel Placeholder -->
+      <div class="viewer-panel">
+        <div class="pdf-viewer-section">
+          <div class="pdf-toolbar">
+            <span class="pdf-title">DHRP Document</span>
+            <div class="pdf-controls">
+              <span class="page-indicator">Page 1</span>
+              <button mat-icon-button><mat-icon>zoom_in</mat-icon></button>
+              <button mat-icon-button><mat-icon>zoom_out</mat-icon></button>
+              <button mat-icon-button><mat-icon>download</mat-icon></button>
+            </div>
+          </div>
+          <div class="pdf-viewer-placeholder">
+            <mat-icon class="large-icon">picture_as_pdf</mat-icon>
+            <p>PDF Viewer</p>
+            <p class="hint">Integrate with ng2-pdf-viewer or PDF.js for actual rendering</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

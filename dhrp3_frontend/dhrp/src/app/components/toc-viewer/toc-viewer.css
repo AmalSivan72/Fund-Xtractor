@@ -1,0 +1,68 @@
+/* Container spacing */
+.container {
+    max-width: 800px;
+    margin: auto;
+    padding: 1rem;
+  }
+   
+  /* Header styling */
+  h4 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+  }
+   
+  /* Back button */
+  button.btn-outline-secondary {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+   
+  /* List group styling */
+  .list-group-item {
+    font-size: 14px;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 8px;
+    background-color: #f9f9f9;
+  }
+   
+  /* Section title */
+  .list-group-item > strong {
+    font-weight: 600;
+    color: #2c3e50;
+  }
+   
+  /* Subsection list */
+  .list-group-item ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-top: 6px;
+  }
+   
+  .list-group-item ul li {
+    font-size: 13px;
+    margin-bottom: 4px;
+    color: #555;
+  }
+   
+  /* Responsive tweaks */
+  @media (max-width: 768px) {
+    .container {
+      padding: 0.5rem;
+    }
+   
+    h4 {
+      font-size: 16px;
+    }
+   
+    .list-group-item {
+      font-size: 13px;
+      padding: 0.6rem 0.8rem;
+    }
+   
+    .list-group-item ul li {
+      font-size: 12px;
+    }
+  }

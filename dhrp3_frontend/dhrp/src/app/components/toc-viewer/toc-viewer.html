@@ -1,0 +1,15 @@
+<div class="container mt-4">
+  <button class="btn btn-outline-secondary mb-3" (click)="goBack()">← Back to Dashboard</button>
+
+  <h4 class="mb-3"> TOC for {{ docName }}</h4>
+  <ul class="list-group">
+    <li *ngFor="let section of toc" class="list-group-item">
+      <strong>{{ section.title }}</strong> (Page {{ section.page }})
+      <ul *ngIf="section.subsections.length > 0" class="ms-3 mt-1">
+        <li *ngFor="let sub of section.subsections">
+          {{ sub.title }} (Page {{ sub.page }})
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>

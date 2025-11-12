@@ -1,0 +1,139 @@
+.container-fluid {
+  padding: 1rem 2rem;
+}
+ 
+/* Sidebar */
+.sidebar {
+  background-color: #ffffff;
+  padding: 1rem;
+  border-right: 1px solid #e0e0e0;
+  font-size: 14px;
+  font-family: 'Segoe UI', sans-serif;
+}
+ 
+/* Risk item styling */
+.risk-item {
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  color: #3c2dda; /* Hexaware Blue */
+  background-color: #ffffff;
+  border: 1px solid transparent;
+}
+ 
+/* Hover effect */
+.risk-item:hover {
+  background-color: #3c2dda;
+  color: #ffffff;
+}
+ 
+/* Active selection */
+.active-risk {
+  background-color: #e0e7ff;
+  color: #3c2dda;
+  font-weight: 600;
+  border: 1px solid #3c2dda;
+}
+ 
+/* Viewer panel */
+.col-md-8 {
+  padding: 1rem 2rem;
+  font-size: 14px;
+  font-family: 'Segoe UI', sans-serif;
+}
+ 
+/* Heading */
+h5 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+ 
+/* Card styling */
+.card {
+  border: none;
+  background-color: #fafafa;
+}
+ 
+.card-header {
+  background-color: #f0f0f0;
+  font-size: 14px;
+  font-weight: 500;
+}
+ 
+/* List group items */
+.list-group-item {
+  border: none;
+  padding: 8px 12px;
+  background-color: transparent;
+}
+ 
+.list-group-item strong {
+  font-weight: 500;
+  color: #222;
+}
+ 
+.list-group-item ul {
+  list-style-type: disc;
+  padding-left: 1rem;
+  margin-top: 4px;
+}
+ 
+.list-group-item li {
+  font-size: 13px;
+  color: #555;
+}
+ 
+/* Search inputs */
+input.form-control {
+  font-size: 13px;
+  padding: 6px 10px;
+}
+ 
+/* Textarea */
+textarea.form-control {
+  font-size: 13px;
+  background-color: #fefefe;
+  border: 1px solid #ddd;
+}
+.markdown-body {
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 0.85rem; /* Smaller font for minimal look */
+  line-height: 1.5;
+  color: #333;
+}
+ 
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500; /* Softer than bold */
+  font-size: 1rem;
+}
+ 
+.markdown-body ul {
+  padding-left: 1rem;
+  margin-bottom: 0.5rem;
+}
+ 
+.markdown-body li {
+  margin-bottom: 0.25rem;
+}
+ 
+.markdown-body strong {
+  font-weight: 500;
+}
+ 
+.markdown-body pre {
+  font-size: 0.8rem;
+  background-color: #f8f9fa;
+  padding: 0.75rem;
+  border-radius: 4px;
+  overflow-x: auto;
+}

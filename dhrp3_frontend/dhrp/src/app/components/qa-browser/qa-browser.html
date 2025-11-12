@@ -1,0 +1,91 @@
+<div class="container mt-4">
+  <!-- Top bar: Back + Download -->
+  <div class="top-bar">
+    <button class="btn btn-primary btn-download" (click)="downloadCSV()">⬇️ Download CSV</button>
+  </div>
+  
+
+  <!-- Filename heading -->
+  <h5 class="mb-3">
+    {{ selectedCompany ? ' List of Questions: ' + filename : 'Select a company to view Q/A' }}
+  </h5>
+
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-4 sidebar">
+      <input type="text" class="form-control mb-3" placeholder="Search company..." (input)="search($event.target.value)">
+      <div id="companyList">
+        <div *ngFor="let entry of filteredEntries"
+             class="qa-item"
+             [class.active-qa]="entry.pdf_filename === selectedDoc"
+             (click)="select(entry)">
+          {{ entry.company }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Viewer -->
+    <div class="col-md-8">
+      <div *ngIf="loading" class="text-center my-5">
+        <div class="spinner-border text-info" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Loading Q/A data…</p>
+      </div>
+
+      <div *ngIf="!loading && rows.length > 0">
+        <input type="text" class="form-control mb-3" [(ngModel)]="searchTerm" placeholder="Search Q/A…">
+
+        <div class="table-wrapper">
+          <table class="table table-sm table-bordered table-striped minimal-table">
+            <thead>
+              <tr>
+                <th *ngFor="let col of columns">{{ col }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of filteredRows">
+                <ng-container *ngFor="let col of columns">
+                  <td>
+                    <ng-container *ngIf="col === 'Answer'; else plainCell">
+                      <div [innerHTML]="row['AnswerHtml']" class="markdown-answer clickable" (click)="openPanel(row)"></div>
+                    </ng-container>
+                    <ng-template #plainCell>
+                      {{ row[col] }}
+                    </ng-template>
+                  </td>
+                </ng-container>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div *ngIf="!loading && rows.length === 0" class="text-muted">
+        No Q/A data found in CSV.
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide-in backdrop -->
+  <div class="slide-backdrop" *ngIf="activeRow" (click)="closePanel()"></div>
+
+  <!-- Slide-in panel -->
+  <div class="slide-panel" [class.open]="activeRow" (click)="closePanel()">
+    <div class="slide-content" (click)="$event.stopPropagation()">
+      <h6 class="mb-2"> Detailed Answer</h6>
+      <div [innerHTML]="activeRow?.AnswerHtml" class="markdown-answer"></div>
+
+      <hr class="my-3">
+<!--<div *ngIf="activeRow">
+        <p><strong>Section:</strong> {{ activeRow.section }}</p>
+        <p><strong>Subsection:</strong> {{ activeRow.subsection }}</p>
+        <p><strong>Pages:</strong> {{ activeRow.pdf_start_page }}–{{ activeRow.pdf_end_page }}</p>
+        <p><strong>Similarity Score:</strong> {{ activeRow.similarity | number:'1.2-2' }}</p>
+      </div>-->
+      
+
+      <button class="btn btn-outline-secondary mt-3" (click)="closePanel()">Close</button>
+    </div>
+  </div>
+</div>

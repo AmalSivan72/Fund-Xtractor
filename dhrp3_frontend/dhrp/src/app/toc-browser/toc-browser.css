@@ -1,0 +1,76 @@
+/* Container spacing */
+.container-fluid {
+  padding: 1rem 2rem;
+}
+ 
+/* Sidebar styling */
+.sidebar {
+  background-color: #ffffff;
+  padding: 1rem;
+  border-right: 1px solid #e0e0e0;
+  font-size: 14px;
+  font-family: 'Segoe UI', sans-serif;
+}
+ 
+/* Company list item */
+.toc-item {
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  color: #3c2dda; /* Hexaware Blue */
+  background-color: #ffffff;
+  border: 1px solid transparent;
+}
+ 
+/* Hover effect */
+.toc-item:hover {
+  background-color: #3c2dda;
+  color: #ffffff;
+}
+ 
+/* Active selection */
+.active-toc {
+  background-color: #e0e7ff;
+  color: #3c2dda;
+  font-weight: 600;
+  border: 1px solid #3c2dda;
+}
+ 
+/* Viewer panel */
+.col-md-8 {
+  padding: 1rem 2rem;
+  font-size: 14px;
+  font-family: 'Segoe UI', sans-serif;
+}
+ 
+/* Heading */
+h5 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+ 
+/* TOC list styling */
+.list-group-item {
+  border: none;
+  padding: 8px 12px;
+  background-color: transparent;
+}
+ 
+.list-group-item strong {
+  font-weight: 500;
+  color: #222;
+}
+ 
+.list-group-item ul {
+  list-style-type: disc;
+  padding-left: 1rem;
+  margin-top: 4px;
+}
+ 
+.list-group-item li {
+  font-size: 13px;
+  color: #555;
+}

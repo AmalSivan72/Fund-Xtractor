@@ -1,0 +1,115 @@
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1060;
+}
+ 
+/* Logo */
+.navbar .logo {
+  height: 18px;
+  width: auto;
+  object-fit: contain;
+}
+ 
+/* Menu icon */
+.navbar .btn-outline-secondary {
+  font-size: 16px;
+  padding: 4px 10px;
+}
+ 
+/* Brand text */
+.navbar .navbar-brand {
+  color: #3c2dda;
+  font-size: 17px;
+  font-weight: 500;
+  margin-bottom: 1px;
+}
+ 
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 240px;
+  height: calc(100% - 60px);
+  background-color: #fdfdfd;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.08);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  z-index: 1050;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 14px;
+}
+ 
+.sidebar.active {
+  transform: translateX(0);
+}
+ 
+/* Sidebar overlay */
+.sidebar-overlay {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 60px);
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 1049;
+}
+ 
+/* Sidebar links */
+.sidebar .nav-link {
+  font-weight: 500;
+  color: #3c2dda;
+  background-color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  text-align: center;
+}
+ 
+.sidebar .nav-link:hover {
+  background-color: #3c2dda;
+  color: #ffffff;
+}
+ 
+.sidebar .nav-item {
+  margin-bottom: 4px;
+}
+ 
+/* Sidebar footer */
+.sidebar-footer {
+  border-top: 1px solid #e0e0e0;
+  font-size: 13px;
+  color: #666;
+  padding-top: 10px;
+}
+ 
+/* Admin/User buttons */
+.sidebar-footer .btn-outline-dark,
+.sidebar-footer .btn-outline-secondary {
+  font-size: 12px;
+  font-weight: 500;
+  color: #3c2dda;
+  background-color: #ffffff;
+  border: 1px solid #3c2dda;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+ 
+.sidebar-footer .btn-outline-dark:hover,
+.sidebar-footer .btn-outline-secondary:hover {
+  background-color: #3c2dda;
+  color: #ffffff;
+}
+ 
+/* Main content spacing to avoid navbar overlap */
+.main-content {
+  padding-top: 76px; /* 60px navbar + 16px breathing room */
+}
